@@ -1,49 +1,51 @@
 #include "main.h"
-/**
- * handle_print - Prints an argument based on its type
- * @fmt: Formatted string in which to print the arguments.
- * @list: List of arguments to be printed.
- * @ind: ind.
- * @buffer: Buffer array to handle print.
- * @flags: Calculates active flags
- * @width: get width.
- * @precision: Precision specification
- * @size: Size specifier
- * Return: 1 or 2;
- */
-int handle_print(const char *fmt, int *ind, va_list list, char buffer[],
-	int flags, int width, int precision, int size)
-{
-	int i, unknow_len = 0, printed_chars = -1;
-	fmt_t fmt_types[] = {
-		{'c', print_char}, {'s', print_string}, {'%', print_percent},
-		{'i', print_int}, {'d', print_int}, {'b', print_binary},
-		{'u', print_unsigned}, {'o', print_octal}, {'x', print_hexadecimal},
-		{'X', print_hexa_upper}, {'p', print_pointer}, {'S', print_non_printable},
-		{'r', print_reverse}, {'R', print_rot13string}, {'\0', NULL}
-	};
-	for (i = 0; fmt_types[i].fmt != '\0'; i++)
-		if (fmt[*ind] == fmt_types[i].fmt)
-			return (fmt_types[i].fn(list, buffer, flags, width, precision, size));
 
-	if (fmt_types[i].fmt == '\0')
+/*
+ * nb_handle_print - Processes and prints arguments based on their types
+ * @nb_fmt: Formatted string to print arguments.
+ * @nb_list: List of arguments to be printed.
+ * @nb_ind: Index.
+ * @nb_buffer: Output buffer array for print handling.
+ * @nb_flags: Calculates active flags.
+ * @nb_width: Width.
+ * @nb_precision: Precision specification.
+ * @nb_size: Size specifier.
+ * Return: Number of characters printed or -1 for errors.
+ */
+int nb_handle_print(const char *nb_fmt, int *nb_ind, va_list nb_list, char nb_buffer[],
+	int nb_flags, int nb_width, int nb_precision, int nb_size)
+{
+	int nb_i, nb_unknown_len = 0, nb_printed_chars = -1;
+	nb_fmt_t nb_fmt_types[] = {
+		{'c', nb_print_char}, {'s', nb_print_string}, {'%', nb_print_percent},
+		{'i', nb_print_int}, {'d', nb_print_int}, {'b', nb_print_binary},
+		{'u', nb_print_unsigned}, {'o', nb_print_octal}, {'x', nb_print_hexadecimal},
+		{'X', nb_print_hexa_upper}, {'p', nb_print_pointer}, {'S', nb_print_non_printable},
+		{'r', nb_print_reverse}, {'R', nb_print_rot13string}, {'\0', NULL}
+	};
+
+	for (nb_i = 0; nb_fmt_types[nb_i].nb_fmt != '\0'; nb_i++)
+		if (nb_fmt[*nb_ind] == nb_fmt_types[nb_i].nb_fmt)
+			return (nb_fmt_types[nb_i].nb_fn(nb_list, nb_buffer, nb_flags, nb_width, nb_precision, nb_size));
+
+	if (nb_fmt_types[nb_i].nb_fmt == '\0')
 	{
-		if (fmt[*ind] == '\0')
+		if (nb_fmt[*nb_ind] == '\0')
 			return (-1);
-		unknow_len += write(1, "%%", 1);
-		if (fmt[*ind - 1] == ' ')
-			unknow_len += write(1, " ", 1);
-		else if (width)
+		nb_unknown_len += write(1, "%%", 1);
+		if (nb_fmt[*nb_ind - 1] == ' ')
+			nb_unknown_len += write(1, " ", 1);
+		else if (nb_width)
 		{
-			--(*ind);
-			while (fmt[*ind] != ' ' && fmt[*ind] != '%')
-				--(*ind);
-			if (fmt[*ind] == ' ')
-				--(*ind);
+			--(*nb_ind);
+			while (nb_fmt[*nb_ind] != ' ' && nb_fmt[*nb_ind] != '%')
+				--(*nb_ind);
+			if (nb_fmt[*nb_ind] == ' ')
+				--(*nb_ind);
 			return (1);
 		}
-		unknow_len += write(1, &fmt[*ind], 1);
-		return (unknow_len);
+		nb_unknown_len += write(1, &nb_fmt[*nb_ind], 1);
+		return (nb_unknown_len);
 	}
-	return (printed_chars);
+	return (nb_printed_chars);
 }

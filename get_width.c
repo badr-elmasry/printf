@@ -1,37 +1,36 @@
-#include "main.h"
+#include "nb_main.h"
 
-/**
- * get_width - Calculates the width for printing
- * @format: Formatted string in which to print the arguments.
- * @i: List of arguments to be printed.
- * @list: list of arguments.
+/*
+ * nb_calculate_output_width - Determines the width for printing
+ * @nb_format: Formatted string for printing arguments.
+ * @nb_index: Index of the current character in the format string.
+ * @nb_args: List of arguments.
  *
- * Return: width.
+ * Returns: Calculated width.
  */
-int get_width(const char *format, int *i, va_list list)
+int nb_calculate_output_width(const char *nb_format, int *nb_index, va_list nb_args)
 {
-	int curr_i;
-	int width = 0;
+    int nb_curr_index;
+    int nb_width = 0;
 
-	for (curr_i = *i + 1; format[curr_i] != '\0'; curr_i++)
-	{
-		if (is_digit(format[curr_i]))
-		{
-			width *= 10;
-			width += format[curr_i] - '0';
-		}
-		else if (format[curr_i] == '*')
-		{
-			curr_i++;
-			width = va_arg(list, int);
-			break;
-		}
-		else
-			break;
-	}
+    for (nb_curr_index = *nb_index + 1; nb_format[nb_curr_index] != '\0'; nb_curr_index++)
+    {
+        if (nb_is_digit(nb_format[nb_curr_index]))
+        {
+            nb_width *= 10;
+            nb_width += nb_format[nb_curr_index] - '0';
+        }
+        else if (nb_format[nb_curr_index] == '*')
+        {
+            nb_curr_index++;
+            nb_width = va_arg(nb_args, int);
+            break;
+        }
+        else
+            break;
+    }
 
-	*i = curr_i - 1;
+    *nb_index = nb_curr_index - 1;
 
-	return (width);
+    return nb_width;
 }
-

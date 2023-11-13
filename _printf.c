@@ -1,66 +1,66 @@
 #include "main.h"
 
-void print_buffer(char buffer[], int *buff_ind);
+void nb_print_buffer(char nb_buffer[], int *nb_buff_ind);
 
 /**
- * _printf - Printf function
- * @format: format.
- * Return: Printed chars.
+ * nb_printf - Custom Printf function for NB project
+ * @nb_format: Format string.
+ * Return: Number of printed characters.
  */
-int _printf(const char *format, ...)
+int nb_printf(const char *nb_format, ...)
 {
-	int i, printed = 0, printed_chars = 0;
-	int flags, width, precision, size, buff_ind = 0;
-	va_list list;
-	char buffer[BUFF_SIZE];
+	int i, nb_printed = 0, nb_printed_chars = 0;
+	int nb_flags, nb_width, nb_precision, nb_size, nb_buff_ind = 0;
+	va_list nb_args;
+	char nb_buffer[NB_BUFF_SIZE];
 
-	if (format == NULL)
+	if (nb_format == NULL)
 		return (-1);
 
-	va_start(list, format);
+	va_start(nb_args, nb_format);
 
-	for (i = 0; format && format[i] != '\0'; i++)
+	for (i = 0; nb_format && nb_format[i] != '\0'; i++)
 	{
-		if (format[i] != '%')
+		if (nb_format[i] != '%')
 		{
-			buffer[buff_ind++] = format[i];
-			if (buff_ind == BUFF_SIZE)
-				print_buffer(buffer, &buff_ind);
-			/* write(1, &format[i], 1);*/
-			printed_chars++;
+			nb_buffer[nb_buff_ind++] = nb_format[i];
+			if (nb_buff_ind == NB_BUFF_SIZE)
+				nb_print_buffer(nb_buffer, &nb_buff_ind);
+			nb_printed_chars++;
 		}
 		else
 		{
-			print_buffer(buffer, &buff_ind);
-			flags = get_flags(format, &i);
-			width = get_width(format, &i, list);
-			precision = get_precision(format, &i, list);
-			size = get_size(format, &i);
+			nb_print_buffer(nb_buffer, &nb_buff_ind);
+			nb_flags = nb_get_flags(nb_format, &i);
+			nb_width = nb_get_width(nb_format, &i, nb_args);
+			nb_precision = nb_get_precision(nb_format, &i, nb_args);
+			nb_size = nb_get_size(nb_format, &i);
 			++i;
-			printed = handle_print(format, &i, list, buffer,
-				flags, width, precision, size);
-			if (printed == -1)
+			nb_printed = nb_handle_print(nb_format, &i, nb_args, nb_buffer,
+				nb_flags, nb_width, nb_precision, nb_size);
+			if (nb_printed == -1)
 				return (-1);
-			printed_chars += printed;
+			nb_printed_chars += nb_printed;
 		}
 	}
 
-	print_buffer(buffer, &buff_ind);
+	nb_print_buffer(nb_buffer, &nb_buff_ind);
 
-	va_end(list);
+	va_end(nb_args);
 
-	return (printed_chars);
+	return (nb_printed_chars);
 }
 
 /**
- * print_buffer - Prints the contents of the buffer if it exist
- * @buffer: Array of chars
- * @buff_ind: Index at which to add next char, represents the length.
+ * nb_print_buffer - Prints the contents of the buffer if it exists
+ * @nb_buffer: Array of characters
+ * @nb_buff_ind: Index at which to add the next character, represents the length.
  */
-void print_buffer(char buffer[], int *buff_ind)
+void nb_print_buffer(char nb_buffer[], int *nb_buff_ind)
 {
-	if (*buff_ind > 0)
-		write(1, &buffer[0], *buff_ind);
+	if (*nb_buff_ind > 0)
+		write(1, &nb_buffer[0], *nb_buff_ind);
 
-	*buff_ind = 0;
+	*nb_buff_ind = 0;
 }
+

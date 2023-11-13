@@ -1,26 +1,27 @@
 #include "main.h"
 
-/**
- * get_size - Calculates the size to cast the argument
- * @format: Formatted string in which to print the arguments
- * @i: List of arguments to be printed.
+/*
+ * nb_sizeEvaluator - Determines the size for typecasting the argument
+ * @formatString: String with the argument specifier
+ * @index: Index of the argument specifier in the format string
  *
- * Return: Precision.
+ * Return: The size specifier.
  */
-int get_size(const char *format, int *i)
-{
-	int curr_i = *i + 1;
-	int size = 0;
+int nb_sizeEvaluator(const char *formatString, int *index) {
+    int currentIndex = *index + 1;
+    int dataSize = 0;
 
-	if (format[curr_i] == 'l')
-		size = S_LONG;
-	else if (format[curr_i] == 'h')
-		size = S_SHORT;
+    // Check for 'l' or 'h' size specifiers
+    if (formatString[currentIndex] == 'l')
+        dataSize = NB_SIZE_LONG;
+    else if (formatString[currentIndex] == 'h')
+        dataSize = NB_SIZE_SHORT;
 
-	if (size == 0)
-		*i = curr_i - 1;
-	else
-		*i = curr_i;
+    // Update the index based on the evaluated size
+    if (dataSize == 0)
+        *index = currentIndex - 1;
+    else
+        *index = currentIndex;
 
-	return (size);
+    return dataSize;
 }
