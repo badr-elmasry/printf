@@ -1,41 +1,41 @@
 #include "main.h"
 
-/*
- * nb_calculate_precision - Determines the precision for printing
- * @nb_format: Formatted string for printing arguments
- * @nb_index: Index of the current character in the format string
- * @nb_args: List of arguments
+/**
+ * NB_getPrecision - Determines the precision for printing
+ * @NB_format: Formatted string containing the arguments
+ * @NB_i: Index of the current character in the format string
+ * @NB_list: List of arguments to be printed
  *
- * Returns: Calculated precision.
+ * Return: Precision for printing.
  */
-int nb_calculate_precision(const char *nb_format, int *nb_index, va_list nb_args)
+int NB_getPrecision(const char *NB_format, int *NB_i, va_list NB_list)
 {
-	int nb_current_index = *nb_index + 1;
-	int nb_precision = -1;
+	int NB_currIndex = *NB_i + 1;
+	int NB_precision = -1;
 
-	if (nb_format[nb_current_index] != '.')
-		return (nb_precision);
+	if (NB_format[NB_currIndex] != '.')
+		return (NB_precision);
 
-	nb_precision = 0;
+	NB_precision = 0;
 
-	for (nb_current_index += 1; nb_format[nb_current_index] != '\0'; nb_current_index++)
+	for (NB_currIndex += 1; NB_format[NB_currIndex] != '\0'; NB_currIndex++)
 	{
-		if (nb_is_digit(nb_format[nb_current_index]))
+		if (NB_isDigit(NB_format[NB_currIndex]))
 		{
-			nb_precision *= 10;
-			nb_precision += nb_format[nb_current_index] - '0';
+			NB_precision *= 10;
+			NB_precision += NB_format[NB_currIndex] - '0';
 		}
-		else if (nb_format[nb_current_index] == '*')
+		else if (NB_format[NB_currIndex] == '*')
 		{
-			nb_current_index++;
-			nb_precision = va_arg(nb_args, int);
+			NB_currIndex++;
+			NB_precision = va_arg(NB_list, int);
 			break;
 		}
 		else
 			break;
 	}
 
-	*nb_index = nb_current_index - 1;
+	*NB_i = NB_currIndex - 1;
 
-	return nb_precision;
+	return (NB_precision);
 }

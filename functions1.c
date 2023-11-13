@@ -1,156 +1,159 @@
 #include "main.h"
 
+/************************* PRINT UNSIGNED INTEGER *************************/
 /**
- * nb_print_unsigned - Prints an unsigned number
- * @nb_types: List a of arguments
- * @nb_output: Output buffer array to handle print
- * @nb_flags:  Calculates active flags
- * @nb_width: get width
- * @nb_precision: Precision specification
- * @nb_size: Size specifier
- * Return: Number of chars printed.
+ * NB_printUnsigned - Handles printing an unsigned integer.
+ * @NB_arguments: Variable argument list.
+ * @NB_outputBuffer: Buffer for storing characters.
+ * @NB_flags: Flags indicating formatting options.
+ * @NB_width: Width specifier.
+ * @NB_precision: Precision specifier.
+ * @NB_size: Size specifier.
+ * Return: Number of characters printed.
  */
-int nb_print_unsigned(va_list nb_types, char nb_output[],
-	int nb_flags, int nb_width, int nb_precision, int nb_size)
+int NB_printUnsigned(va_list NB_arguments, char NB_outputBuffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size)
 {
-	int nb_i = NB_BUFF_SIZE - 2;
-	unsigned long int nb_num = va_arg(nb_types, unsigned long int);
+	int NB_i = NB_BUFF_SIZE - 2;
+	unsigned long int NB_num = va_arg(NB_arguments, unsigned long int);
 
-	nb_num = nb_convert_size_unsgnd(nb_num, nb_size);
+	NB_num = NB_convertSizeUnsgnd(NB_num, NB_size);
 
-	if (nb_num == 0)
-		nb_output[nb_i--] = '0';
+	if (NB_num == 0)
+		NB_outputBuffer[NB_i--] = '0';
 
-	nb_output[NB_BUFF_SIZE - 1] = '\0';
+	NB_outputBuffer[NB_BUFF_SIZE - 1] = '\0';
 
-	while (nb_num > 0)
+	while (NB_num > 0)
 	{
-		nb_output[nb_i--] = (nb_num % 10) + '0';
-		nb_num /= 10;
+		NB_outputBuffer[NB_i--] = (NB_num % 10) + '0';
+		NB_num /= 10;
 	}
 
-	nb_i++;
+	NB_i++;
 
-	return (nb_write_unsgnd(0, nb_i, nb_output, nb_flags, nb_width, nb_precision, nb_size));
+	return (NB_writeUnsgnd(0, NB_i, NB_outputBuffer, NB_flags, NB_width, NB_precision, NB_size));
 }
 
+/************* PRINT UNSIGNED INTEGER IN OCTAL  ****************/
 /**
- * nb_print_octal - Prints an unsigned number in octal notation
- * @nb_types: Lista of arguments
- * @nb_output: Output buffer array to handle print
- * @nb_flags:  Calculates active flags
- * @nb_width: get width
- * @nb_precision: Precision specification
- * @nb_size: Size specifier
- * Return: Number of chars printed
+ * NB_printOctal - Handles printing an unsigned integer in octal notation.
+ * @NB_arguments: Variable argument list.
+ * @NB_outputBuffer: Buffer for storing characters.
+ * @NB_flags: Flags indicating formatting options.
+ * @NB_width: Width specifier.
+ * @NB_precision: Precision specifier.
+ * @NB_size: Size specifier.
+ * Return: Number of characters printed.
  */
-int nb_print_octal(va_list nb_types, char nb_output[],
-	int nb_flags, int nb_width, int nb_precision, int nb_size)
+int NB_printOctal(va_list NB_arguments, char NB_outputBuffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size)
 {
-	int nb_i = NB_BUFF_SIZE - 2;
-	unsigned long int nb_num = va_arg(nb_types, unsigned long int);
-	unsigned long int nb_init_num = nb_num;
+	int NB_i = NB_BUFF_SIZE - 2;
+	unsigned long int NB_num = va_arg(NB_arguments, unsigned long int);
+	unsigned long int NB_initNum = NB_num;
 
-	UNUSED(nb_width);
+	NB_UNUSED(NB_width);
 
-	nb_num = nb_convert_size_unsgnd(nb_num, nb_size);
+	NB_num = NB_convertSizeUnsgnd(NB_num, NB_size);
 
-	if (nb_num == 0)
-		nb_output[nb_i--] = '0';
+	if (NB_num == 0)
+		NB_outputBuffer[NB_i--] = '0';
 
-	nb_output[NB_BUFF_SIZE - 1] = '\0';
+	NB_outputBuffer[NB_BUFF_SIZE - 1] = '\0';
 
-	while (nb_num > 0)
+	while (NB_num > 0)
 	{
-		nb_output[nb_i--] = (nb_num % 8) + '0';
-		nb_num /= 8;
+		NB_outputBuffer[NB_i--] = (NB_num % 8) + '0';
+		NB_num /= 8;
 	}
 
-	if (nb_flags & NB_F_HASH && nb_init_num != 0)
-		nb_output[nb_i--] = '0';
+	if (NB_flags & NB_F_HASH && NB_initNum != 0)
+		NB_outputBuffer[NB_i--] = '0';
 
-	nb_i++;
+	NB_i++;
 
-	return (nb_write_unsgnd(0, nb_i, nb_output, nb_flags, nb_width, nb_precision, nb_size));
+	return (NB_writeUnsgnd(0, NB_i, NB_outputBuffer, NB_flags, NB_width, NB_precision, NB_size));
 }
 
+/************** PRINT UNSIGNED INTEGER IN HEXADECIMAL **************/
 /**
- * nb_print_hexadecimal - Prints an unsigned number in hexadecimal notation
- * @nb_types: Lista of arguments
- * @nb_output: Output buffer array to handle print
- * @nb_flags:  Calculates active flags
- * @nb_width: get width
- * @nb_precision: Precision specification
- * @nb_size: Size specifier
- * Return: Number of chars printed
+ * NB_printHexadecimal - Handles printing an unsigned integer in hexadecimal notation.
+ * @NB_arguments: Variable argument list.
+ * @NB_outputBuffer: Buffer for storing characters.
+ * @NB_flags: Flags indicating formatting options.
+ * @NB_width: Width specifier.
+ * @NB_precision: Precision specifier.
+ * @NB_size: Size specifier.
+ * Return: Number of characters printed.
  */
-int nb_print_hexadecimal(va_list nb_types, char nb_output[],
-	int nb_flags, int nb_width, int nb_precision, int nb_size)
+int NB_printHexadecimal(va_list NB_arguments, char NB_outputBuffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size)
 {
-	return (nb_print_hexa(nb_types, "0123456789abcdef", nb_output,
-		nb_flags, 'x', nb_width, nb_precision, nb_size));
+	return (NB_printHexa(NB_arguments, "0123456789abcdef", NB_outputBuffer,
+		NB_flags, 'x', NB_width, NB_precision, NB_size));
 }
 
+/************* PRINT UNSIGNED INTEGER IN UPPER HEXADECIMAL **************/
 /**
- * nb_print_hexa_upper - Prints an unsigned number in upper hexadecimal notation
- * @nb_types: Lista of arguments
- * @nb_output: Output buffer array to handle print
- * @nb_flags:  Calculates active flags
- * @nb_width: get width
- * @nb_precision: Precision specification
- * @nb_size: Size specifier
- * Return: Number of chars printed
+ * NB_printHexaUpper - Handles printing an unsigned integer in upper hexadecimal notation.
+ * @NB_arguments: Variable argument list.
+ * @NB_outputBuffer: Buffer for storing characters.
+ * @NB_flags: Flags indicating formatting options.
+ * @NB_width: Width specifier.
+ * @NB_precision: Precision specifier.
+ * @NB_size: Size specifier.
+ * Return: Number of characters printed.
  */
-int nb_print_hexa_upper(va_list nb_types, char nb_output[],
-	int nb_flags, int nb_width, int nb_precision, int nb_size)
+int NB_printHexaUpper(va_list NB_arguments, char NB_outputBuffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size)
 {
-	return (nb_print_hexa(nb_types, "0123456789ABCDEF", nb_output,
-		nb_flags, 'X', nb_width, nb_precision, nb_size));
+	return (NB_printHexa(NB_arguments, "0123456789ABCDEF", NB_outputBuffer,
+		NB_flags, 'X', NB_width, NB_precision, NB_size));
 }
 
+/************** PRINT HEXADECIMAL NUMBER IN LOWER OR UPPER **************/
 /**
- * nb_print_hexa - Prints a hexadecimal number in lower or upper
- * @nb_types: Lista of arguments
- * @map_to: Array of values to map the number to
- * @nb_output: Output buffer array to handle print
- * @nb_flags:  Calculates active flags
- * @nb_flag_ch: Calculates active flags
- * @nb_width: get width
- * @nb_precision: Precision specification
- * @nb_size: Size specifier
- * @nb_size: Size specification
- * Return: Number of chars printed
+ * NB_printHexa - Handles printing a hexadecimal number in lower or upper case.
+ * @NB_arguments: Variable argument list.
+ * @NB_mapTo: Array of values to map the number to.
+ * @NB_outputBuffer: Buffer for storing characters.
+ * @NB_flags: Flags indicating formatting options.
+ * @NB_flagCh: Flag indicating whether to use lower or upper case.
+ * @NB_width: Width specifier.
+ * @NB_precision: Precision specifier.
+ * @NB_size: Size specifier.
+ * Return: Number of characters printed.
  */
-int nb_print_hexa(va_list nb_types, char map_to[], char nb_output[],
-	int nb_flags, char nb_flag_ch, int nb_width, int nb_precision, int nb_size)
+int NB_printHexa(va_list NB_arguments, char NB_mapTo[], char NB_outputBuffer[],
+	int NB_flags, char NB_flagCh, int NB_width, int NB_precision, int NB_size)
 {
-	int nb_i = NB_BUFF_SIZE - 2;
-	unsigned long int nb_num = va_arg(nb_types, unsigned long int);
-	unsigned long int nb_init_num = nb_num;
+	int NB_i = NB_BUFF_SIZE - 2;
+	unsigned long int NB_num = va_arg(NB_arguments, unsigned long int);
+	unsigned long int NB_initNum = NB_num;
 
-	UNUSED(nb_width);
+	NB_UNUSED(NB_width);
 
-	nb_num = nb_convert_size_unsgnd(nb_num, nb_size);
+	NB_num = NB_convertSizeUnsgnd(NB_num, NB_size);
 
-	if (nb_num == 0)
-		nb_output[nb_i--] = '0';
+	if (NB_num == 0)
+		NB_outputBuffer[NB_i--] = '0';
 
-	nb_output[NB_BUFF_SIZE - 1] = '\0';
+	NB_outputBuffer[NB_BUFF_SIZE - 1] = '\0';
 
-	while (nb_num > 0)
+	while (NB_num > 0)
 	{
-		nb_output[nb_i--] = map_to[nb_num % 16];
-		nb_num /= 16;
+		NB_outputBuffer[NB_i--] = NB_mapTo[NB_num % 16];
+		NB_num /= 16;
 	}
 
-	if (nb_flags & NB_F_HASH && nb_init_num != 0)
+	if (NB_flags & NB_F_HASH && NB_initNum != 0)
 	{
-		nb_output[nb_i--] = nb_flag_ch;
-		nb_output[nb_i--] = '0';
+		NB_outputBuffer[NB_i--] = NB_flagCh;
+		NB_outputBuffer[NB_i--] = '0';
 	}
 
-	nb_i++;
+	NB_i++;
 
-	return (nb_write_unsgnd(0, nb_i, nb_output, nb_flags, nb_width, nb_precision, nb_size));
+	return (NB_writeUnsgnd(0, NB_i, NB_outputBuffer, NB_flags, NB_width, NB_precision, NB_size));
 }
-

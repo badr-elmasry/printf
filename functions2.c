@@ -1,170 +1,188 @@
 #include "main.h"
 
+/****************** PRINT MEMORY POINTER ******************/
 /**
- * nb_print_pointer - Outputs the hexadecimal value of a pointer variable.
- * @nb_args: Variable arguments list.
- * @nb_out_buff: Buffer for output.
- * @nb_format_flags: Active formatting flags.
- * @nb_width: Width specification.
- * @nb_precision: Precision specification.
- * @nb_size: Size specifier.
+ * NB_printMemoryPointer - Prints the memory address stored in a pointer variable
+ * @NB_arguments: Variable argument list.
+ * @NB_outputBuffer: Buffer for storing characters.
+ * @NB_flags: Flags indicating formatting options.
+ * @NB_width: Width specifier.
+ * @NB_precision: Precision specifier.
+ * @NB_size: Size specifier.
  * Return: Number of characters printed.
  */
-int nb_print_pointer(va_list nb_args, char nb_out_buff[],
-	int nb_format_flags, int nb_width, int nb_precision, int nb_size)
+int NB_printMemoryPointer(va_list NB_arguments, char NB_outputBuffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size)
 {
-	char nb_extra_char = 0, nb_padding_char = ' ';
-	int nb_index = NB_BUFF_SIZE - 2, nb_length = 2, nb_padding_start = 1;
-	unsigned long nb_address;
-	char nb_hex_map[] = "0123456789abcdef";
-	void *nb_pointer = va_arg(nb_args, void *);
+	char NB_extraChar = 0, NB_paddingChar = ' ';
+	int NB_index = NB_BUFF_SIZE - 2, NB_length = 2, NB_paddingStart = 1; /* length=2, for '0x' */
+	unsigned long NB_numAddress;
+	char NB_mapTo[] = "0123456789abcdef";
+	void *NB_address = va_arg(NB_arguments, void *);
 
-	if (nb_pointer == NULL)
+	NB_UNUSED(NB_width);
+	NB_UNUSED(NB_size);
+
+	if (NB_address == NULL)
 		return (write(1, "(nil)", 5));
 
-	nb_out_buff[NB_BUFF_SIZE - 1] = '\0';
-	UNUSED(nb_precision);
+	NB_outputBuffer[NB_BUFF_SIZE - 1] = '\0';
+	NB_UNUSED(NB_precision);
 
-	nb_address = (unsigned long)nb_pointer;
+	NB_numAddress = (unsigned long)NB_address;
 
-	while (nb_address > 0)
+	while (NB_numAddress > 0)
 	{
-		nb_out_buff[nb_index--] = nb_hex_map[nb_address % 16];
-		nb_address /= 16;
-		nb_length++;
+		NB_outputBuffer[NB_index--] = NB_mapTo[NB_numAddress % 16];
+		NB_numAddress /= 16;
+		NB_length++;
 	}
 
-	if ((nb_format_flags & NB_F_ZERO) && !(nb_format_flags & NB_F_MINUS))
-		nb_padding_char = '0';
+	if ((NB_flags & NB_F_ZERO) && !(NB_flags & NB_F_MINUS))
+		NB_paddingChar = '0';
+	if (NB_flags & NB_F_PLUS)
+		NB_extraChar = '+', NB_length++;
+	else if (NB_flags & NB_F_SPACE)
+		NB_extraChar = ' ', NB_length++;
 
-	if (nb_format_flags & NB_F_PLUS)
-		nb_extra_char = '+', nb_length++;
-	else if (nb_format_flags & NB_F_SPACE)
-		nb_extra_char = ' ', nb_length++;
+	NB_index++;
 
-	nb_index++;
-
-	return (write_pointer(nb_out_buff, nb_index, nb_length,
-		nb_width, nb_format_flags, nb_padding_char, nb_extra_char, nb_padding_start));
+	return (NB_writePointer(NB_outputBuffer, NB_index, NB_length,
+		NB_width, NB_flags, NB_paddingChar, NB_extraChar, NB_paddingStart));
 }
 
+/************************* PRINT NON-PRINTABLE *************************/
 /**
- * nb_print_non_printable - Outputs ASCII codes in hex of non-printable characters.
- * @nb_args: Variable arguments list.
- * @nb_out_buff: Buffer for output.
- * @nb_format_flags: Active formatting flags.
- * @nb_width: Width specification.
- * @nb_precision: Precision specification.
- * @nb_size: Size specifier.
+ * NB_printNonPrintable - Prints ASCII codes in hexadecimal for non-printable characters
+ * @NB_arguments: Variable argument list.
+ * @NB_outputBuffer: Buffer for storing characters.
+ * @NB_flags: Flags indicating formatting options.
+ * @NB_width: Width specifier.
+ * @NB_precision: Precision specifier.
+ * @NB_size: Size specifier.
  * Return: Number of characters printed.
  */
-int nb_print_non_printable(va_list nb_args, char nb_out_buff[],
-	int nb_format_flags, int nb_width, int nb_precision, int nb_size)
+int NB_printNonPrintable(va_list NB_arguments, char NB_outputBuffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size)
 {
-	int nb_i = 0, nb_offset = 0;
-	char *nb_str = va_arg(nb_args, char *);
+	int NB_i = 0, NB_offset = 0;
+	char *NB_str = va_arg(NB_arguments, char *);
 
-	if (nb_str == NULL)
+	NB_UNUSED(NB_flags);
+	NB_UNUSED(NB_width);
+	NB_UNUSED(NB_precision);
+	NB_UNUSED(NB_size);
+
+	if (NB_str == NULL)
 		return (write(1, "(null)", 6));
 
-	while (nb_str[nb_i] != '\0')
+	while (NB_str[NB_i] != '\0')
 	{
-		if (nb_is_printable(nb_str[nb_i]))
-			nb_out_buff[nb_i + nb_offset] = nb_str[nb_i];
+		if (NB_isPrintable(NB_str[NB_i]))
+			NB_outputBuffer[NB_i + NB_offset] = NB_str[NB_i];
 		else
-			nb_offset += nb_append_hexa_code(nb_str[nb_i], nb_out_buff, nb_i + nb_offset);
+			NB_offset += NB_appendHexCode(NB_str[NB_i], NB_outputBuffer, NB_i + NB_offset);
 
-		nb_i++;
+		NB_i++;
 	}
 
-	nb_out_buff[nb_i + nb_offset] = '\0';
+	NB_outputBuffer[NB_i + NB_offset] = '\0';
 
-	return (write(1, nb_out_buff, nb_i + nb_offset));
+	return (write(1, NB_outputBuffer, NB_i + NB_offset));
 }
 
+/************************* PRINT REVERSE *************************/
 /**
- * nb_print_reverse - Outputs a reversed string.
- * @nb_args: Variable arguments list.
- * @nb_out_buff: Buffer for output.
- * @nb_format_flags: Active formatting flags.
- * @nb_width: Width specification.
- * @nb_precision: Precision specification.
- * @nb_size: Size specifier.
+ * NB_printReverse - Prints a reversed string.
+ * @NB_arguments: Variable argument list.
+ * @NB_outputBuffer: Buffer for storing characters.
+ * @NB_flags: Flags indicating formatting options.
+ * @NB_width: Width specifier.
+ * @NB_precision: Precision specifier.
+ * @NB_size: Size specifier.
  * Return: Number of characters printed.
  */
-int nb_print_reverse(va_list nb_args, char nb_out_buff[],
-	int nb_format_flags, int nb_width, int nb_precision, int nb_size)
+int NB_printReverse(va_list NB_arguments, char NB_outputBuffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size)
 {
-	char *nb_str;
-	int nb_i, nb_count = 0;
+	char *NB_str;
+	int NB_i, NB_count = 0;
 
-	nb_str = va_arg(nb_args, char *);
+	NB_UNUSED(NB_outputBuffer);
+	NB_UNUSED(NB_flags);
+	NB_UNUSED(NB_width);
+	NB_UNUSED(NB_size);
 
-	if (nb_str == NULL)
+	NB_str = va_arg(NB_arguments, char *);
+
+	if (NB_str == NULL)
 	{
-		UNUSED(nb_precision);
-		nb_str = ")Null(";
-	}
+		NB_UNUSED(NB_precision);
 
-	for (nb_i = 0; nb_str[nb_i]; nb_i++)
+		NB_str = ")Null(";
+	}
+	for (NB_i = 0; NB_str[NB_i]; NB_i++)
 		;
 
-	for (nb_i = nb_i - 1; nb_i >= 0; nb_i--)
+	for (NB_i = NB_i - 1; NB_i >= 0; NB_i--)
 	{
-		char nb_character = nb_str[nb_i];
-		write(1, &nb_character, 1);
-		nb_count++;
-	}
+		char NB_char = NB_str[NB_i];
 
-	return (nb_count);
+		write(1, &NB_char, 1);
+		NB_count++;
+	}
+	return (NB_count);
 }
 
+/************************* PRINT STRING IN ROT13 *************************/
 /**
- * nb_print_rot13string - Outputs a string in ROT13.
- * @nb_args: Variable arguments list.
- * @nb_out_buff: Buffer for output.
- * @nb_format_flags: Active formatting flags.
- * @nb_width: Width specification.
- * @nb_precision: Precision specification.
- * @nb_size: Size specifier.
+ * NB_printRot13String - Prints a string in ROT13 encoding.
+ * @NB_arguments: Variable argument list.
+ * @NB_outputBuffer: Buffer for storing characters.
+ * @NB_flags: Flags indicating formatting options.
+ * @NB_width: Width specifier.
+ * @NB_precision: Precision specifier.
+ * @NB_size: Size specifier.
  * Return: Number of characters printed.
  */
-int nb_print_rot13string(va_list nb_args, char nb_out_buff[],
-	int nb_format_flags, int nb_width, int nb_precision, int nb_size)
+int NB_printRot13String(va_list NB_arguments, char NB_outputBuffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size)
 {
-	char nb_temp_char;
-	char *nb_str;
-	unsigned int nb_i, nb_j;
-	int nb_count = 0;
-	char nb_in[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-	char nb_out[] = "NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm";
+	char NB_x;
+	char *NB_str;
+	unsigned int NB_i, NB_j;
+	int NB_count = 0;
+	char NB_in[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+	char NB_out[] = "NOPQRSTUVWXYZABCDEFGHIJKLMnopqrstuvwxyzabcdefghijklm";
 
-	nb_str = va_arg(nb_args, char *);
+	NB_str = va_arg(NB_arguments, char *);
 
-	if (nb_str == NULL)
-		nb_str = "(AHYY)";
+	NB_UNUSED(NB_outputBuffer);
+	NB_UNUSED(NB_flags);
+	NB_UNUSED(NB_width);
+	NB_UNUSED(NB_precision);
+	NB_UNUSED(NB_size);
 
-	for (nb_i = 0; nb_str[nb_i]; nb_i++)
+	if (NB_str == NULL)
+		NB_str = "(AHYY)";
+	for (NB_i = 0; NB_str[NB_i]; NB_i++)
 	{
-		for (nb_j = 0; nb_in[nb_j]; nb_j++)
+		for (NB_j = 0; NB_in[NB_j]; NB_j++)
 		{
-			if (nb_in[nb_j] == nb_str[nb_i])
+			if (NB_in[NB_j] == NB_str[NB_i])
 			{
-				nb_temp_char = nb_out[nb_j];
-				write(1, &nb_temp_char, 1);
-				nb_count++;
+				NB_x = NB_out[NB_j];
+				write(1, &NB_x, 1);
+				NB_count++;
 				break;
 			}
 		}
-
-		if (!nb_in[nb_j])
+		if (!NB_in[NB_j])
 		{
-			nb_temp_char = nb_str[nb_i];
-			write(1, &nb_temp_char, 1);
-			nb_count++;
+			NB_x = NB_str[NB_i];
+			write(1, &NB_x, 1);
+			NB_count++;
 		}
 	}
-
-	return (nb_count);
+	return (NB_count);
 }
-

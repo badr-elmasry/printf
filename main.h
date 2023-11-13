@@ -1,117 +1,116 @@
 #ifndef MAIN_H
 #define MAIN_H
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <unistd.h>
 
 #define UNUSED(x) (void)(x)
-#define BUFF_SIZE 1024
+#define NB_BUFF_SIZE 1024
 
 /* FLAGS */
-#define F_MINUS 1
-#define F_PLUS 2
-#define F_ZERO 4
-#define F_HASH 8
-#define F_SPACE 16
+#define NB_F_MINUS 1
+#define NB_F_PLUS 2
+#define NB_F_ZERO 4
+#define NB_F_HASH 8
+#define NB_F_SPACE 16
 
 /* SIZES */
-#define S_LONG 2
-#define S_SHORT 1
+#define NB_S_LONG 2
+#define NB_S_SHORT 1
 
 /**
- * struct fmt - Struct op
+ * struct NB_fmt - Struct op
  *
- * @fmt: The format.
- * @fn: The function associated.
+ * @NB_fmt: The format.
+ * @NB_fn: The function associated.
  */
-struct fmt
+struct NB_fmt
 {
-	char fmt;
-	int (*fn)(va_list, char[], int, int, int, int);
+	char NB_fmt;
+	int (*NB_fn)(va_list, char[], int, int, int, int);
 };
 
-
 /**
- * typedef struct fmt fmt_t - Struct op
+ * typedef struct NB_fmt NB_fmt_t - Struct op
  *
- * @fmt: The format.
- * @fm_t: The function associated.
+ * @NB_fmt: The format.
+ * @NB_fm_t: The function associated.
  */
-typedef struct fmt fmt_t;
+typedef struct NB_fmt NB_fmt_t;
 
-int _printf(const char *format, ...);
-int handle_print(const char *fmt, int *i,
-va_list list, char buffer[], int flags, int width, int precision, int size);
+int NB_printf(const char *format, ...);
+int NB_handlePrint(const char *NB_fmt, int *NB_i,
+va_list NB_list, char NB_buffer[], int NB_flags, int NB_width, int NB_precision, int NB_size);
 
 /****************** FUNCTIONS ******************/
 
 /* Funtions to print chars and strings */
-int print_char(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_string(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_percent(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
+int NB_printChar(va_list types, char NB_buffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size);
+int NB_printString(va_list types, char NB_buffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size);
+int NB_printPercent(va_list types, char NB_buffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size);
 
 /* Functions to print numbers */
-int print_int(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_binary(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_unsigned(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_octal(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_hexadecimal(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
-int print_hexa_upper(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
+int NB_printInt(va_list types, char NB_buffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size);
+int NB_printBinary(va_list types, char NB_buffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size);
+int NB_printUnsigned(va_list types, char NB_buffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size);
+int NB_printOctal(va_list types, char NB_buffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size);
+int NB_printHexadecimal(va_list types, char NB_buffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size);
+int NB_printHexaUpper(va_list types, char NB_buffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size);
 
-int print_hexa(va_list types, char map_to[],
-char buffer[], int flags, char flag_ch, int width, int precision, int size);
+int NB_printHexa(va_list types, char map_to[],
+char NB_buffer[], int NB_flags, char NB_flagCh, int NB_width, int NB_precision, int NB_size);
 
-/* Function to print non printable characters */
-int print_non_printable(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
+/* Function to print non-printable characters */
+int NB_printNonPrintable(va_list types, char NB_buffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size);
 
-/* Funcion to print memory address */
-int print_pointer(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
+/* Function to print memory address */
+int NB_printPointer(va_list types, char NB_buffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size);
 
-/* Funciotns to handle other specifiers */
-int get_flags(const char *format, int *i);
-int get_width(const char *format, int *i, va_list list);
-int get_precision(const char *format, int *i, va_list list);
-int get_size(const char *format, int *i);
+/* Functions to handle other specifiers */
+int NB_getFlags(const char *NB_format, int *NB_i);
+int NB_getWidth(const char *NB_format, int *NB_i, va_list NB_list);
+int NB_getPrecision(const char *NB_format, int *NB_i, va_list NB_list);
+int NB_getSize(const char *NB_format, int *NB_i);
 
-/*Function to print string in reverse*/
-int print_reverse(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
+/* Function to print string in reverse */
+int NB_printReverse(va_list types, char NB_buffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size);
 
-/*Function to print a string in rot 13*/
-int print_rot13string(va_list types, char buffer[],
-	int flags, int width, int precision, int size);
+/* Function to print a string in rot 13 */
+int NB_printRot13String(va_list types, char NB_buffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size);
 
-/* width handler */
-int handle_write_char(char c, char buffer[],
-	int flags, int width, int precision, int size);
-int write_number(int is_positive, int ind, char buffer[],
-	int flags, int width, int precision, int size);
-int write_num(int ind, char bff[], int flags, int width, int precision,
-	int length, char padd, char extra_c);
-int write_pointer(char buffer[], int ind, int length,
-	int width, int flags, char padd, char extra_c, int padd_start);
-
-int write_unsgnd(int is_negative, int ind,
-char buffer[],
-	int flags, int width, int precision, int size);
+/* Width handler */
+int NB_handleWriteChar(char NB_c, char NB_buffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size);
+int NB_writeNumber(int NB_isPositive, int NB_ind, char NB_buffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size);
+int NB_writeNum(int NB_ind, char NB_bff[], int NB_flags, int NB_width, int NB_precision,
+	int NB_length, char NB_padd, char NB_extraC);
+int NB_writePointer(char NB_buffer[], int NB_ind, int NB_length,
+	int NB_width, int NB_flags, char NB_padd, char NB_extraC, int NB_paddStart);
+int NB_writeUnsgnd(int NB_isNegative, int NB_ind,
+char NB_buffer[],
+	int NB_flags, int NB_width, int NB_precision, int NB_size);
 
 /****************** UTILS ******************/
-int is_printable(char);
-int append_hexa_code(char, char[], int);
-int is_digit(char);
+int NB_isPrintable(char);
+int NB_appendHexaCode(char, char[], int);
+int NB_isDigit(char);
 
-long int convert_size_number(long int num, int size);
-long int convert_size_unsgnd(unsigned long int num, int size);
+long int NB_convertSizeNumber(long int num, int NB_size);
+long int NB_convertSizeUnsgnd(unsigned long int num, int NB_size);
 
 #endif /* MAIN_H */

@@ -1,34 +1,36 @@
 #include "main.h"
 
-/*
- * nb_get_flags - Determine active flags
- * @nb_format: Formatted string for printing arguments
- * @nb_i: Index parameter
- * Return: Active flags
+/**
+ * NB_getFlags - Determines active formatting flags
+ * @NB_format: Formatted string containing the arguments
+ * @NB_i: Index of the current character in the format string
+ * Return: Active flags based on the format string
  */
-int nb_get_flags(const char *nb_format, int *nb_i)
+int NB_getFlags(const char *NB_format, int *NB_i)
 {
-	// Flag characters: - + 0 # ' '
-	// Flag values:     1  2  4  8  16
-	int nb_j, nb_curr_i;
-	int nb_flags = 0;
-	const char NB_FLAGS_CH[] = {'-', '+', '0', '#', ' ', '\0'};
-	const int NB_FLAGS_ARR[] = {NB_F_MINUS, NB_F_PLUS, NB_F_ZERO, NB_F_HASH, NB_F_SPACE, 0};
+	/* - + 0 # ' ' */
+	/* 1 2 4 8  16 */
+	int NB_j, NB_currIndex;
+	int NB_flags = 0;
+	const char NB_FLAGS_CHAR[] = {'-', '+', '0', '#', ' ', '\0'};
+	const int NB_FLAGS_ARRAY[] = {NB_F_MINUS, NB_F_PLUS, NB_F_ZERO, NB_F_HASH, NB_F_SPACE, 0};
 
-	for (nb_curr_i = *nb_i + 1; nb_format[nb_curr_i] != '\0'; nb_curr_i++)
+	for (NB_currIndex = *NB_i + 1; NB_format[NB_currIndex] != '\0'; NB_currIndex++)
 	{
-		for (nb_j = 0; NB_FLAGS_CH[nb_j] != '\0'; nb_j++)
-			if (nb_format[nb_curr_i] == NB_FLAGS_CH[nb_j])
+		for (NB_j = 0; NB_FLAGS_CHAR[NB_j] != '\0'; NB_j++)
+		{
+			if (NB_format[NB_currIndex] == NB_FLAGS_CHAR[NB_j])
 			{
-				nb_flags |= NB_FLAGS_ARR[nb_j];
+				NB_flags |= NB_FLAGS_ARRAY[NB_j];
 				break;
 			}
+		}
 
-		if (NB_FLAGS_CH[nb_j] == 0)
+		if (NB_FLAGS_CHAR[NB_j] == 0)
 			break;
 	}
 
-	*nb_i = nb_curr_i - 1;
+	*NB_i = NB_currIndex - 1;
 
-	return (nb_flags);
+	return (NB_flags);
 }

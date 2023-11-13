@@ -1,87 +1,86 @@
 #include "main.h"
 
 /**
- * @brief Checks if a character is printable.
+ * NB_isPrintable - Checks if a character is printable
+ * @NB_c: Character to be evaluated.
  *
- * @param c The character to evaluate.
- * @return 1 if c is printable, 0 otherwise.
+ * Return: 1 if NB_c is printable, 0 otherwise
  */
-int nb_is_printable(char c)
+int NB_isPrintable(char NB_c)
 {
-	if (c >= 32 && c < 127)
-		return 1;
+	if (NB_c >= 32 && NB_c < 127)
+		return (1);
 
-	return 0;
+	return (0);
 }
 
 /**
- * @brief Appends ASCII in hexadecimal code to the buffer.
- *
- * @param ascii_code The ASCII code.
- * @param buffer The array of characters.
- * @param i The index at which to start appending.
- * @return Always 3.
+ * NB_appendHexaCode - Appends ASCII in hexadecimal code to buffer
+ * @NB_buffer: Array of characters.
+ * @NB_i: Index at which to start appending.
+ * @NB_asciiCode: ASCII code.
+ * Return: Always 3
  */
-int nb_append_hexa_code(char ascii_code, char buffer[], int i)
+int NB_appendHexaCode(char NB_asciiCode, char NB_buffer[], int NB_i)
 {
-	char map_to[] = "0123456789ABCDEF";
+	char NB_mapTo[] = "0123456789ABCDEF";
 	/* The hexadecimal format code is always 2 digits long */
-	if (ascii_code < 0)
-		ascii_code *= -1;
+	if (NB_asciiCode < 0)
+		NB_asciiCode *= -1;
 
-	buffer[i++] = '\\';
-	buffer[i++] = 'x';
+	NB_buffer[NB_i++] = '\\';
+	NB_buffer[NB_i++] = 'x';
 
-	buffer[i++] = map_to[ascii_code / 16];
-	buffer[i] = map_to[ascii_code % 16];
+	NB_buffer[NB_i++] = NB_mapTo[NB_asciiCode / 16];
+	NB_buffer[NB_i] = NB_mapTo[NB_asciiCode % 16];
 
-	return 3;
+	return (3);
 }
 
 /**
- * @brief Checks if a character is a digit.
+ * NB_isDigit - Checks if a character is a digit
+ * @NB_c: Character to be evaluated
  *
- * @param c The character to be evaluated.
- * @return 1 if c is a digit, 0 otherwise.
+ * Return: 1 if NB_c is a digit, 0 otherwise
  */
-int nb_is_digit(char c)
+int NB_isDigit(char NB_c)
 {
-	if (c >= '0' && c <= '9')
-		return 1;
+	if (NB_c >= '0' && NB_c <= '9')
+		return (1);
 
-	return 0;
+	return (0);
 }
 
 /**
- * @brief Casts a number to the specified size.
+ * NB_convertSizeNumber - Casts a number to the specified size
+ * @NB_num: Number to be casted.
+ * @NB_size: Number indicating the type to be casted.
  *
- * @param num The number to be casted.
- * @param size The number indicating the type to be casted.
- * @return The casted value of num.
+ * Return: Casted value of NB_num
  */
-long int nb_convert_size_number(long int num, int size)
+long int NB_convertSizeNumber(long int NB_num, int NB_size)
 {
-	if (size == NB_S_LONG)
-		return num;
-	else if (size == NB_S_SHORT)
-		return (short)num;
+	if (NB_size == NB_S_LONG)
+		return (NB_num);
+	else if (NB_size == NB_S_SHORT)
+		return ((short)NB_num);
 
-	return (int)num;
+	return ((int)NB_num);
 }
 
 /**
- * @brief Casts a number to the specified size (unsigned).
+ * NB_convertSizeUnsigned - Casts an unsigned number to the specified size
+ * @NB_num: Number to be casted.
+ * @NB_size: Number indicating the type to be casted.
  *
- * @param num The number to be casted.
- * @param size The number indicating the type to be casted.
- * @return The casted value of num.
+ * Return: Casted value of NB_num
  */
-long int nb_convert_size_unsgnd(unsigned long int num, int size)
+unsigned long int NB_convertSizeUnsigned(unsigned long int NB_num, int NB_size)
 {
-	if (size == NB_S_LONG)
-		return num;
-	else if (size == NB_S_SHORT)
-		return (unsigned short)num;
+	if (NB_size == NB_S_LONG)
+		return (NB_num);
+	else if (NB_size == NB_S_SHORT)
+		return ((unsigned short)NB_num);
 
-	return (unsigned int)num;
+	return ((unsigned int)NB_num);
 }
