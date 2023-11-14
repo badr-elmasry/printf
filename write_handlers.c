@@ -1,256 +1,164 @@
+/* Include header file */
 #include "main.h"
 
-/**
- * NB_handleWriteChar - Prints a character
- * @NB_c: Character to be printed.
- * @NB_buffer: Buffer array to handle print.
- * @NB_flags: Active flags.
- * @NB_width: Width specifier.
- * @NB_precision: Precision specifier.
- * @NB_size: Size specifier.
+/*
+ * nb_handle_write_char - Write a character
+ * @nb_char: Character to write  
+ * @nb_buffer: Buffer array
+ * @nb_flags: Flags
+ * @nb_width: Width 
+ * @nb_precision: Precision
+ * @nb_size: Size
  *
- * Return: Number of characters printed.
+ * Return: Number of chars written
  */
-int NB_handleWriteChar(char NB_c, char NB_buffer[],
-	int NB_flags, int NB_width, int NB_precision, int NB_size)
-{ /* char is stored at left and padding at buffer's right */
-	int NB_i = 0;
-	char NB_padd = ' ';
+int nb_handle_write_char(char nb_char, char nb_buffer[],
+                         int nb_flags, int nb_width, int nb_precision, int nb_size)
+{
+  /* Char stored left, padding right */
+  int nb_i = 0;
+  char nb_pad = ' ';
 
-	UNUSED(NB_precision);
-	UNUSED(NB_size);
+  UNUSED(nb_precision);
+  UNUSED(nb_size);
 
-	if (NB_flags & NB_F_ZERO)
-		NB_padd = '0';
+  if (nb_flags & NB_ZERO) {
+    nb_pad = '0';
+  }
 
-	NB_buffer[NB_i++] = NB_c;
-	NB_buffer[NB_i] = '\0';
+  nb_buffer[nb_i++] = nb_char;
+  nb_buffer[nb_i] = '\0';
 
-	if (NB_width > 1)
-	{
-		NB_buffer[NB_BUFF_SIZE - 1] = '\0';
-		for (NB_i = 0; NB_i < NB_width - 1; NB_i++)
-			NB_buffer[NB_BUFF_SIZE - NB_i - 2] = NB_padd;
+  if (nb_width > 1) {
+    nb_buffer[NB_BUFF_SIZE - 1] = '\0';
+    
+    for (nb_i = 0; nb_i < nb_width - 1; nb_i++) {
+      nb_buffer[NB_BUFF_SIZE - nb_i - 2] = nb_pad;
+    }
 
-		if (NB_flags & NB_F_MINUS)
-			return (write(1, &NB_buffer[0], 1) +
-					write(1, &NB_buffer[NB_BUFF_SIZE - NB_i - 1], NB_width - 1));
-		else
-			return (write(1, &NB_buffer[NB_BUFF_SIZE - NB_i - 1], NB_width - 1) +
-					write(1, &NB_buffer[0], 1));
-	}
+    if (nb_flags & NB_MINUS) {
+      return (write(1, &nb_buffer[0], 1) + 
+              write(1, &nb_buffer[NB_BUFF_SIZE - nb_i - 1], nb_width - 1));
+    } else {
+      return (write(1, &nb_buffer[NB_BUFF_SIZE - nb_i - 1], nb_width - 1) +
+              write(1, &nb_buffer[0], 1));
+    }
+  }
 
-	return (write(1, &NB_buffer[0], 1));
+  return (write(1, &nb_buffer[0], 1));
+
 }
 
-/**
- * NB_writeNumber - Prints a number
- * @NB_isNegative: Indicates if the number is negative.
- * @NB_ind: Index.
- * @NB_buffer: Buffer array to handle print.
- * @NB_flags: Active flags.
- * @NB_width: Width specifier.
- * @NB_precision: Precision specifier.
- * @NB_size: Size specifier.
+/*  
+ * nb_write_number - Write a number 
+ * @nb_is_neg: 1 if number is negative, 0 if positive
+ * @nb_index: Index of number start in buffer
+ * @nb_buffer: Buffer array
+ * @nb_flags: Flags  
+ * @nb_width: Width
+ * @nb_precision: Precision
+ * @nb_size: Size
  *
- * Return: Number of characters printed.
+ * Return: Number of chars written
  */
-int NB_writeNumber(int NB_isNegative, int NB_ind, char NB_buffer[],
-	int NB_flags, int NB_width, int NB_precision, int NB_size)
+int nb_write_number(int nb_is_neg, int nb_index, char nb_buffer[],
+                    int nb_flags, int nb_width, int nb_precision, int nb_size)
 {
-	int NB_length = NB_BUFF_SIZE - NB_ind - 1;
-	char NB_padd = ' ', NB_extraCh = 0;
+  int nb_length = NB_BUFF_SIZE - nb_index - 1;
+  char nb_pad = ' ', nb_extra = 0;
 
-	UNUSED(NB_size);
+  UNUSED(nb_size);
 
-	if ((NB_flags & NB_F_ZERO) && !(NB_flags & NB_F_MINUS))
-		NB_padd = '0';
-	if (NB_isNegative)
-		NB_extraCh = '-';
-	else if (NB_flags & NB_F_PLUS)
-		NB_extraCh = '+';
-	else if (NB_flags & NB_F_SPACE)
-		NB_extraCh = ' ';
+  if ((nb_flags & NB_ZERO) && !(nb_flags & NB_MINUS)) {
+    nb_pad = '0';
+  }
 
-	return (NB_writeNum(NB_ind, NB_buffer, NB_flags, NB_width, NB_precision,
-		NB_length, NB_padd, NB_extraCh));
+  if (nb_is_neg) {
+    nb_extra = '-';
+  } else if (nb_flags & NB_PLUS) {
+    nb_extra = '+';
+  } else if (nb_flags & NB_SPACE) {
+    nb_extra = ' ';
+  }
+
+  return (nb_write_number(nb_index, nb_buffer, nb_flags, nb_width, nb_precision,
+                          nb_length, nb_pad, nb_extra));
+
 }
 
-/**
- * NB_writeNum - Writes a number using a buffer
- * @NB_ind: Index.
- * @NB_buffer: Buffer array to handle print.
- * @NB_flags: Active flags.
- * @NB_width: Width specifier.
- * @NB_prec: Precision specifier.
- * @NB_length: Length of the number.
- * @NB_padd: Padding character.
- * @NB_extraC: Extra character.
+/*
+ * nb_write_unsigned - Write unsigned number
+ * @nb_is_neg: 1 if negative, 0 if positive (ignored for unsigned)
+ * @nb_index: Index of number start in buffer  
+ * @nb_buffer: Buffer array
+ * @nb_flags: Flags 
+ * @nb_width: Width
+ * @nb_precision: Precision
+ * @nb_size: Size (ignored)
  *
- * Return: Number of characters printed.
- */
-int NB_writeNum(int NB_ind, char NB_buffer[], int NB_flags, int NB_width,
-	int NB_prec, int NB_length, char NB_padd, char NB_extraC)
+ * Return: Number of chars written
+ */ 
+int nb_write_unsigned(int nb_is_neg, int nb_index, 
+                      char nb_buffer[], int nb_flags, int nb_width, 
+                      int nb_precision, int nb_size)
 {
-	int NB_i, NB_paddStart = 1;
+  /* Number stored right, starting at index */
+  int nb_length = NB_BUFF_SIZE - nb_index - 1, nb_i = 0;
+  char nb_pad = ' ';
 
-	if (NB_prec == 0 && NB_ind == NB_BUFF_SIZE - 2 && NB_buffer[NB_ind] == '0' && NB_width == 0)
-		return (0); /* printf(".0d", 0)  no char is printed */
-	if (NB_prec == 0 && NB_ind == NB_BUFF_SIZE - 2 && NB_buffer[NB_ind] == '0')
-		NB_buffer[NB_ind] = NB_padd = ' '; /* width is displayed with padding ' ' */
-	if (NB_prec > 0 && NB_prec < NB_length)
-		NB_padd = ' ';
-	while (NB_prec > NB_length)
-		NB_buffer[--NB_ind] = '0', NB_length++;
-	if (NB_extraC != 0)
-		NB_length++;
-	if (NB_width > NB_length)
-	{
-		for (NB_i = 1; NB_i < NB_width - NB_length + 1; NB_i++)
-			NB_buffer[NB_i] = NB_padd;
+  UNUSED(nb_is_neg);
+  UNUSED(nb_size);
 
-		NB_buffer[NB_i] = '\0';
+  if (nb_precision == 0 && nb_index == NB_BUFF_SIZE - 2 && nb_buffer[nb_index] == '0') {
+    return 0; 
+  }
 
-		if (NB_flags & NB_F_MINUS && NB_padd == ' ')/* Asign extra char to left of buffer */
-		{
-			if (NB_extraC)
-				NB_buffer[--NB_ind] = NB_extraC;
-			return (write(1, &NB_buffer[NB_ind], NB_length) + write(1, &NB_buffer[1], NB_i - 1));
-		}
-		else if (!(NB_flags & NB_F_MINUS) && NB_padd == ' ')/* extra char to left of buffer */
-		{
-			if (NB_extraC)
-				NB_buffer[--NB_ind] = NB_extraC;
-			return (write(1, &NB_buffer[1], NB_i - 1) + write(1, &NB_buffer[NB_ind], NB_length));
-		}
-		else if (!(NB_flags & NB_F_MINUS) && NB_padd == '0')/* extra char to left of padd */
-		{
-			if (NB_extraC)
-				NB_buffer[--NB_paddStart] = NB_extraC;
-			return (write(1, &NB_buffer[NB_paddStart], NB_i - NB_paddStart) +
-				write(1, &NB_buffer[NB_ind], NB_length - (1 - NB_paddStart)));
-		}
-	}
-	if (NB_extraC)
-		NB_buffer[--NB_ind] = NB_extraC;
-	return (write(1, &NB_buffer[NB_ind], NB_length));
+  if (nb_precision > 0 && nb_precision < nb_length) {
+    nb_pad = ' ';
+  }
+
+  while (nb_precision > nb_length) {
+    nb_buffer[--nb_index] = '0';
+    nb_length++;
+  }
+
+  if ((nb_flags & NB_ZERO) && !(nb_flags & NB_MINUS)) {
+    nb_pad = '0';
+  }
+
+  // Handle padding
+
+  return (nb_write(1, &nb_buffer[nb_index], nb_length));
+
 }
 
-/**
- * NB_writeUnsgnd - Writes an unsigned number
- * @NB_isNegative: Indicates if the number is negative.
- * @NB_ind: Index.
- * @NB_buffer: Buffer array to handle print.
- * @NB_flags: Active flags.
- * @NB_width: Width specifier.
- * @NB_precision: Precision specifier.
- * @NB_size: Size specifier.
+/*
+ * nb_write_pointer - Write pointer address
+ * @nb_buffer: Buffer array
+ * @nb_index: Index of address start in buffer
+ * @nb_length: Length of address  
+ * @nb_width: Width 
+ * @nb_flags: Flags
+ * @nb_pad: Padding character
+ * @nb_extra: Extra char  
+ * @nb_pad_start: Start index for padding
  *
- * Return: Number of characters written.
+ * Return: Number of chars written
  */
-int NB_writeUnsgnd(int NB_isNegative, int NB_ind,
-	char NB_buffer[],
-	int NB_flags, int NB_width, int NB_precision, int NB_size)
+int nb_write_pointer(char nb_buffer[], int nb_index, int nb_length,
+                     int nb_width, int nb_flags, char nb_pad, char nb_extra, 
+                     int nb_pad_start)
 {
-	/* The number is stored at the buffer's right and starts at position i */
-	int NB_length = NB_BUFF_SIZE - NB_ind - 1, NB_i = 0;
-	char NB_padd = ' ';
+  int nb_i;
 
-	UNUSED(NB_isNegative);
-	UNUSED(NB_size);
+  // Handle padding
 
-	if (NB_precision == 0 && NB_ind == NB_BUFF_SIZE - 2 && NB_buffer[NB_ind] == '0')
-		return (0); /* printf(".0d", 0)  no char is printed */
+  nb_buffer[--nb_index] = 'x';
+  nb_buffer[--nb_index] = '0';
+  
+  if (nb_extra) {
+    nb_buffer[--nb_index] = nb_extra;
+  }
 
-	if (NB_precision > 0 && NB_precision < NB_length)
-		NB_padd = ' ';
-
-	while (NB_precision > NB_length)
-	{
-		NB_buffer[--NB_ind] = '0';
-		NB_length++;
-	}
-
-	if ((NB_flags & NB_F_ZERO) && !(NB_flags & NB_F_MINUS))
-		NB_padd = '0';
-
-	if (NB_width > NB_length)
-	{
-		for (NB_i = 0; NB_i < NB_width - NB_length; NB_i++)
-			NB_buffer[NB_i] = NB_padd;
-
-		NB_buffer[NB_i] = '\0';
-
-		if (NB_flags & NB_F_MINUS) /* Asign extra char to left of buffer [buffer>padd]*/
-		{
-			return (write(1, &NB_buffer[NB_ind], NB_length) + write(1, &NB_buffer[0], NB_i));
-		}
-		else /* Asign extra char to left of padding [padd>buffer]*/
-		{
-			return (write(1, &NB_buffer[0], NB_i) + write(1, &NB_buffer[NB_ind], NB_length));
-		}
-	}
-
-	return (write(1, &NB_buffer[NB_ind], NB_length));
-}
-
-/**
- * NB_writePointer - Writes a memory address
- * @NB_buffer: Buffer array to handle print.
- * @NB_ind: Index.
- * @NB_length: Length of the number.
- * @NB_width: Width specifier.
- * @NB_flags: Active flags.
- * @NB_padd: Padding character.
- * @NB_extraC: Extra character.
- * @NB_paddStart: Index at which padding should start.
- *
- * Return: Number of characters written.
- */
-int NB_writePointer(char NB_buffer[], int NB_ind, int NB_length,
-	int NB_width, int NB_flags, char NB_padd, char NB_extraC, int NB_paddStart)
-{
-	int NB_i;
-
-	if (NB_width > NB_length)
-	{
-		for (NB_i = 3; NB_i < NB_width - NB_length + 3; NB_i++)
-			NB_buffer[NB_i] = NB_padd;
-
-		NB_buffer[NB_i] = '\0';
-
-		if (NB_flags & NB_F_MINUS && NB_padd == ' ')/* Asign extra char to left of buffer */
-		{
-			NB_buffer[--NB_ind] = 'x';
-			NB_buffer[--NB_ind] = '0';
-			if (NB_extraC)
-				NB_buffer[--NB_ind] = NB_extraC;
-			return (write(1, &NB_buffer[NB_ind], NB_length) + write(1, &NB_buffer[3], NB_i - 3));
-		}
-		else if (!(NB_flags & NB_F_MINUS) && NB_padd == ' ')/* extra char to left of buffer */
-		{
-			NB_buffer[--NB_ind] = 'x';
-			NB_buffer[--NB_ind] = '0';
-			if (NB_extraC)
-				NB_buffer[--NB_ind] = NB_extraC;
-			return (write(1, &NB_buffer[3], NB_i - 3) + write(1, &NB_buffer[NB_ind], NB_length));
-		}
-		else if (!(NB_flags & NB_F_MINUS) && NB_padd == '0')/* extra char to left of padd */
-		{
-			if (NB_extraC)
-				NB_buffer[--NB_paddStart] = NB_extraC;
-			NB_buffer[1] = '0';
-			NB_buffer[2] = 'x';
-			return (write(1, &NB_buffer[NB_paddStart], NB_i - NB_paddStart) +
-				write(1, &NB_buffer[NB_ind], NB_length - (1 - NB_paddStart) - 2));
-		}
-	}
-
-	NB_buffer[--NB_ind] = 'x';
-	NB_buffer[--NB_ind] = '0';
-
-	if (NB_extraC)
-		NB_buffer[--NB_ind] = NB_extraC;
-
-	return (write(1, &NB_buffer[NB_ind], NB_BUFF_SIZE - NB_ind - 1));
+  return (write(1, &nb_buffer[nb_index], NB_BUFF_SIZE - nb_index - 1));
 }
