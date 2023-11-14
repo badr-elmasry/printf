@@ -3,15 +3,10 @@
 void print_buffer(char buffer[], int *buff_ind);
 
 /**
- * @brief Prints formatted data to stdout.
+ * _printf - Custom implementation of the printf function
+ * @format: Format string containing the format specifiers
  *
- * This function implements a simplified version of printf to handle
- * a subset of format specifiers. It takes a format string and a variable
- * number of arguments and prints the formatted output to the standard output.
- *
- * @param format A pointer to the format string.
- * @return The number of characters printed (excluding the null byte),
- *         or -1 if an error occurred.
+ * Return: Number of characters printed (excluding the null byte).
  */
 int _printf(const char *format, ...)
 {
@@ -32,7 +27,6 @@ int _printf(const char *format, ...)
 			buffer[buff_ind++] = format[i];
 			if (buff_ind == BUFF_SIZE)
 				print_buffer(buffer, &buff_ind);
-			/* write(1, &format[i], 1);*/
 			printed_chars++;
 		}
 		else
@@ -59,14 +53,9 @@ int _printf(const char *format, ...)
 }
 
 /**
- * @brief Prints the contents of the buffer to stdout.
- *
- * This function is responsible for printing the buffered content to
- * the standard output. It is used to ensure efficient writing of characters
- * in chunks rather than one at a time.
- *
- * @param buffer Array of characters containing the buffered data.
- * @param buff_ind Index at which to add the next character, represents the length.
+ * print_buffer - Prints the contents of the buffer if it exists
+ * @buffer: Array of characters to be printed
+ * @buff_ind: Index at which to add the next character, represents the length.
  */
 void print_buffer(char buffer[], int *buff_ind)
 {
