@@ -1,117 +1,81 @@
-/* Include header file */
 #include "main.h"
 
+void print_out_buffer(char char_arr[], int *arr_idx); 
+
 /*
- * nb_print_buffer - Print nb_buffer if contents exist 
- * @nb_buffer: Character array
- * @nb_index: Index to add next char, represents length
+* display_printf - Display function  
+* @fmt: format string.
+* Return: Number of printed characters.
 */
-void nb_print_buffer(char nb_buffer[], int *nb_index);
 
-/*  
- * nb_print_formatted - Print formatted string
- * @nb_format: Format string 
- *
- * Return: Number of characters printed
-*/
-int nb_print_formatted(const char *nb_format, ...) 
+int display_printf(const char *fmt, ...)
+
 {
-  /* Declare variables */
-  int nb_i;
-  int nb_printed = 0;
-  int nb_total = 0;
 
-  int nb_flags;
-  int nb_width;
-  int nb_precision;
-  int nb_size;
+  int idx, chars_printed = 0, num_printed = 0;
+  int flags, width, precision, size, buf_idx = 0;
+  va_list arg_list;
+  char buf[BUF_SIZE];
 
-  int nb_index = 0;
-  va_list nb_args;
-  char nb_buffer[NB_BUFFER_SIZE];
-
-  /* Handle null format */
-  if (!nb_format) {
+  if (!fmt) 
     return -1;
-  }
 
-  /* Initialize va_list */
-  va_start(nb_args, nb_format);
+  va_start(arg_list, fmt);
 
-  /* Loop through format string */
-  for (nb_i = 0; nb_format[nb_i]; nb_i++) {
+  for (idx = 0; fmt[idx] != '\0'; idx++) {
 
-    /* Normal character */
-    if (nb_format[nb_i] != '%') {
+    if (fmt[idx] != '%') {
 
-      /* Add to buffer */
-      nb_buffer[nb_index++] = nb_format[nb_i];
+      buf[buf_idx++] = fmt[idx];
 
-      /* Flush full buffer */
-      if (nb_index == NB_BUFFER_SIZE) {
-        nb_print_buffer(nb_buffer, &nb_index); 
-      }
+      if (buf_idx == BUF_SIZE)
+        print_out_buffer(buf, &buf_idx); 
 
-      /* Increment total printed */
-      nb_total++;
+      /* write(1, &fmt[idx], 1); */
+      chars_printed++;
 
-    /* Format specifier */
     } else {
 
-      /* Flush buffer */
-      nb_print_buffer(nb_buffer, &nb_index);
+      print_out_buffer(buf, &buf_idx);
 
-      /* Get flags */
-      nb_flags = nb_get_flags(nb_format, &nb_i);
+      flags = get_flags(fmt, &idx);
+      width = get_width(fmt, &idx, arg_list);
+      precision = get_precision(fmt, &idx, arg_list);
+      size = get_size(fmt, &idx);
 
-      /* Get width */
-      nb_width = nb_get_width(nb_format, &nb_i, nb_args);
+      idx++;
 
-      /* Get precision */
-      nb_precision = nb_get_precision(nb_format, &nb_i, nb_args);
+      num_printed = handle_output(fmt, &idx, arg_list, buf,  
+                                  flags, width, precision, size);
 
-      /* Get size */
-      nb_size = nb_get_size(nb_format, &nb_i);
-
-      /* Increment for specifier */ 
-      nb_i++;
-
-      /* Print formatted */
-      nb_printed = nb_handle_print(nb_format, &nb_i, nb_args, nb_buffer,
-                                   nb_flags, nb_width, nb_precision, nb_size);
-
-      /* Check for error */
-      if (nb_printed == -1) {
+      if (num_printed == -1)
         return -1;
-      }
 
-      /* Increment total printed */
-      nb_total += nb_printed;
+      chars_printed += num_printed;
 
     }
 
   }
 
-  /* Flush remaining buffer */
-  nb_print_buffer(nb_buffer, &nb_index);
+  print_out_buffer(buf, &buf_idx);
 
-  /* Cleanup */
-  va_end(nb_args);
+  va_end(arg_list);
 
-  return nb_total;
+  return chars_printed;
 
 }
 
 /*
- * nb_print_buffer - Print nb_buffer if contents exist
- * @nb_buffer: Character array 
- * @nb_index: Index to add next char, represents length  
+* print_out_buffer - Print buffer contents if exists
+* @char_arr: Array of characters  
+* @arr_idx: Index to add next char, represents length
 */
-void nb_print_buffer(char nb_buffer[], int *nb_index)
-{
-  if (*nb_index > 0) {
-    write(1, &nb_buffer[0], *nb_index);
-  }
 
-  *nb_index = 0;
+void print_out_buffer(char char_arr[], int *arr_idx) {
+
+  if (*arr_idx > 0)
+    write(1, &char_arr[0], *arr_idx);
+
+  *arr_idx = 0;
+
 }
