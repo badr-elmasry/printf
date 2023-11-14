@@ -1,28 +1,28 @@
 #include "main.h"
 
 /**
- * determine_width - Determine the width for printing
- * @format: Formatted string to analyze for width
- * @index: Pointer to the current index in the format string
- * @list: List of arguments
+ * get_width - Calculates the width for printing
+ * @format: Formatted string in which to print the arguments.
+ * @i: List of arguments to be printed.
+ * @list: list of arguments.
  *
- * Return: Width for printing
+ * Return: width.
  */
-int determine_width(const char *format, int *index, va_list list)
+int get_width(const char *format, int *i, va_list list)
 {
-	int current_index;
+	int curr_i;
 	int width = 0;
 
-	for (current_index = *index + 1; format[current_index] != '\0'; current_index++)
+	for (curr_i = *i + 1; format[curr_i] != '\0'; curr_i++)
 	{
-		if (is_digit(format[current_index]))
+		if (is_digit(format[curr_i]))
 		{
 			width *= 10;
-			width += format[current_index] - '0';
+			width += format[curr_i] - '0';
 		}
-		else if (format[current_index] == '*')
+		else if (format[curr_i] == '*')
 		{
-			current_index++;
+			curr_i++;
 			width = va_arg(list, int);
 			break;
 		}
@@ -30,7 +30,7 @@ int determine_width(const char *format, int *index, va_list list)
 			break;
 	}
 
-	*index = current_index - 1;
+	*i = curr_i - 1;
 
 	return (width);
 }
