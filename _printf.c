@@ -3,8 +3,8 @@
 void print_buffer(char buffer[], int *buff_ind);
 
 /**
- * _printf - Our used Printf function to print or display
- * @format: Format string containing format specifiers.
+ * _printf - Custom printf function
+ * @format: Format string with optional format specifiers
  * Return: Number of characters printed.
  */
 int _printf(const char *format, ...)
@@ -26,7 +26,6 @@ int _printf(const char *format, ...)
 			buffer[buff_ind++] = format[i];
 			if (buff_ind == BUFF_SIZE)
 				print_buffer(buffer, &buff_ind);
-			/* write(1, &format[i], 1);*/
 			printed_chars++;
 		}
 		else
@@ -53,9 +52,9 @@ int _printf(const char *format, ...)
 }
 
 /**
- * print_buffer : Display or get the buff info if it's exist
- * @buffer: this an array of charaters 
- * @buff_ind: Index of buff to add next char
+ * print_buffer - Prints the contents of the buffer if it exists
+ * @buffer: Array of characters
+ * @buff_ind: Index at which to add the next character, represents the length.
  */
 void print_buffer(char buffer[], int *buff_ind)
 {
