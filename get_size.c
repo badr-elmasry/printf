@@ -1,31 +1,26 @@
-/* Include header file */
 #include "main.h"
 
-/*
- * nb_get_size - Get size modifier for argument 
- * @nb_format: Formatted string to print arguments
- * @nb_i: Pointer to index in format string
+/**
+ * determine_size - Determine the size for casting the argument
+ * @format: Formatted string for analyzing argument size
+ * @index: Pointer to the current index in the format string
  *
- * Return: Size modifier
+ * Return: Size for argument casting
  */
-int nb_get_size(const char *nb_format, int *nb_i) 
+int determine_size(const char *format, int *index)
 {
-  int nb_curr = *nb_i + 1;
-  int nb_size = 0;
+	int current_index = *index + 1;
+	int size = 0;
 
-  if (nb_format[nb_curr] == 'l') {
-    nb_size = NB_LONG;
+	if (format[current_index] == 'l')
+		size = S_LONG;
+	else if (format[current_index] == 'h')
+		size = S_SHORT;
 
-  } else if (nb_format[nb_curr] == 'h') {
-    nb_size = NB_SHORT;
-  }
+	if (size == 0)
+		*index = current_index - 1;
+	else
+		*index = current_index;
 
-  if (!nb_size) {
-    *nb_i = nb_curr - 1;
-
-  } else {
-    *nb_i = nb_curr;
-  }
-
-  return nb_size;
+	return (size);
 }

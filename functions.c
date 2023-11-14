@@ -1,195 +1,200 @@
-/* Include header file */
 #include "main.h"
 
-/*
- * nb_print_char - Prints a character 
- * @nb_args: List of arguments
- * @nb_buffer: Buffer array to handle printing
- * @nb_flags: Active flags
- * @nb_width: Width
- * @nb_precision: Precision specification
- * @nb_size: Size specifier
+/************************* PRINT CHAR *************************/
+
+/**
+ * printCharacter - Prints a character
+ * @args: List of arguments
+ * @buffer: Buffer array for handling print
+ * @flags:  Calculate active flags
+ * @width: Width
+ * @precision: Precision specification
+ * @size: Size specifier
  *
  * Return: Number of characters printed
  */
-int nb_print_char(va_list nb_args, char nb_buffer[], 
-                  int nb_flags, int nb_width, int nb_precision, int nb_size)
+int printCharacter(va_list args, char buffer[],
+	int flags, int width, int precision, int size)
 {
-  char nb_char = va_arg(nb_args, int);
+	char character = va_arg(args, int);
 
-  return (nb_handle_write_char(nb_char, nb_buffer, nb_flags, nb_width,
-                               nb_precision, nb_size));
+	return (writeChar(character, buffer, flags, width, precision, size));
 }
 
-/* 
- * nb_print_string - Prints a string
- * @nb_args: List of arguments
- * @nb_buffer: Buffer array to handle printing
- * @nb_flags: Active flags
- * @nb_width: Width
- * @nb_precision: Precision specification
- * @nb_size: Size specifier
+/************************* PRINT A STRING *************************/
+
+/**
+ * printString - Prints a string
+ * @args: List of arguments
+ * @buffer: Buffer array for handling print
+ * @flags: Calculate active flags
+ * @width: Get width.
+ * @precision: Precision specification
+ * @size: Size specifier
  *
  * Return: Number of characters printed
  */
-int nb_print_string(va_list nb_args, char nb_buffer[],
-                    int nb_flags, int nb_width, int nb_precision, int nb_size)
+int printString(va_list args, char buffer[],
+	int flags, int width, int precision, int size)
 {
-  int nb_length = 0, i;
-  char *nb_str = va_arg(nb_args, char*);
+	int length = 0, i;
+	char *str = va_arg(args, char *);
 
-  UNUSED(nb_buffer);
-  UNUSED(nb_flags);
-  UNUSED(nb_width);
-  UNUSED(nb_precision);
-  UNUSED(nb_size);
+	UNUSED(buffer);
+	UNUSED(flags);
+	UNUSED(width);
+	UNUSED(precision);
+	UNUSED(size);
 
-  if (!nb_str) {
-    nb_str = "(null)";
-    if (nb_precision >= 6) {
-      nb_str = "      ";
-    }
-  }
+	if (str == NULL)
+	{
+		str = "(null)";
+		if (precision >= 6)
+			str = "      ";
+	}
 
-  while (nb_str[nb_length]) {
-    nb_length++;
-  }
+	while (str[length] != '\0')
+		length++;
 
-  if (nb_precision >= 0 && nb_precision < nb_length) {
-    nb_length = nb_precision;
-  }
+	if (precision >= 0 && precision < length)
+		length = precision;
 
-  if (nb_width > nb_length) {
-    if (nb_flags & NB_MINUS) {
-      write(1, &nb_str[0], nb_length);
-      for (i = nb_width - nb_length; i > 0; i--) {
-        write(1, " ", 1);
-      }
-      return (nb_width);
-    } else {
-      for (i = nb_width - nb_length; i > 0; i--) {
-        write(1, " ", 1);
-      }
-      write(1, &nb_str[0], nb_length);
-      return (nb_width);
-    }
-  }
+	if (width > length)
+	{
+		if (flags & F_MINUS)
+		{
+			write(1, &str[0], length);
+			for (i = width - length; i > 0; i--)
+				write(1, " ", 1);
+			return (width);
+		}
+		else
+		{
+			for (i = width - length; i > 0; i--)
+				write(1, " ", 1);
+			write(1, &str[0], length);
+			return (width);
+		}
+	}
 
-  return (write(1, nb_str, nb_length));
+	return (write(1, str, length));
 }
 
-/*
- * nb_print_percent - Prints a percent sign
- * @nb_args: List of arguments
- * @nb_buffer: Buffer array to handle printing 
- * @nb_flags: Active flags
- * @nb_width: Width
- * @nb_precision: Precision specification
- * @nb_size: Size specifier
+/************************* PRINT PERCENT SIGN *************************/
+
+/**
+ * printPercent - Prints a percent sign
+ * @args: List of arguments
+ * @buffer: Buffer array for handling print
+ * @flags: Calculate active flags
+ * @width: Get width.
+ * @precision: Precision specification
+ * @size: Size specifier
  *
  * Return: Number of characters printed
  */
-int nb_print_percent(va_list nb_args, char nb_buffer[],
-                     int nb_flags, int nb_width, int nb_precision, int nb_size)
+int printPercent(va_list args, char buffer[],
+	int flags, int width, int precision, int size)
 {
-  UNUSED(nb_args);
-  UNUSED(nb_buffer);
-  UNUSED(nb_flags);
-  UNUSED(nb_width);
-  UNUSED(nb_precision);
-  UNUSED(nb_size);
-
-  return (write(1, "%%", 1));
+	UNUSED(args);
+	UNUSED(buffer);
+	UNUSED(flags);
+	UNUSED(width);
+	UNUSED(precision);
+	UNUSED(size);
+	return (write(1, "%%", 1));
 }
 
-/*
- * nb_print_int - Prints an integer
- * @nb_args: List of arguments  
- * @nb_buffer: Buffer array to handle printing
- * @nb_flags: Active flags
- * @nb_width: Width
- * @nb_precision: Precision specification 
- * @nb_size: Size specifier
+/************************* PRINT INT *************************/
+
+/**
+ * printInteger - Print integer
+ * @args: List of arguments
+ * @buffer: Buffer array for handling print
+ * @flags: Calculate active flags
+ * @width: Get width.
+ * @precision: Precision specification
+ * @size: Size specifier
  *
  * Return: Number of characters printed
  */
-int nb_print_int(va_list nb_args, char nb_buffer[],
-                 int nb_flags, int nb_width, int nb_precision, int nb_size)
+int printInteger(va_list args, char buffer[],
+	int flags, int width, int precision, int size)
 {
-  int nb_index = NB_BUFF_SIZE - 2;
-  int nb_is_negative = 0;
-  long int nb_num = va_arg(nb_args, long int);
-  unsigned long int nb_abs_num;
+	int i = BUFF_SIZE - 2;
+	int is_negative = 0;
+	long int n = va_arg(args, long int);
+	unsigned long int num;
 
-  nb_num = nb_convert_size(nb_num, nb_size);
+	n = convertSizeNumber(n, size);
 
-  if (nb_num == 0) {
-    nb_buffer[nb_index--] = '0';
-  }
+	if (n == 0)
+		buffer[i--] = '0';
 
-  nb_buffer[NB_BUFF_SIZE - 1] = '\0';
+	buffer[BUFF_SIZE - 1] = '\0';
+	num = (unsigned long int)n;
 
-  if (nb_num < 0) {
-    nb_abs_num = -nb_num;
-    nb_is_negative = 1;
-  } else {
-    nb_abs_num = nb_num;
-  }
+	if (n < 0)
+	{
+		num = (unsigned long int)((-1) * n);
+		is_negative = 1;
+	}
 
-  while (nb_abs_num > 0) {
-    nb_buffer[nb_index--] = (nb_abs_num % 10) + '0';
-    nb_abs_num /= 10;
-  }
+	while (num > 0)
+	{
+		buffer[i--] = (num % 10) + '0';
+		num /= 10;
+	}
 
-  nb_index++;
+	i++;
 
-  return (nb_write_number(nb_is_negative, nb_index, nb_buffer,
-                          nb_flags, nb_width, nb_precision, nb_size));
+	return (writeNumber(is_negative, i, buffer, flags, width, precision, size));
 }
 
-/*
- * nb_print_binary - Prints a number in binary 
- * @nb_args: List of arguments
- * @nb_buffer: Buffer array to handle printing
- * @nb_flags: Active flags  
- * @nb_width: Width
- * @nb_precision: Precision specification
- * @nb_size: Size specifier
+/************************* PRINT BINARY *************************/
+
+/**
+ * printBinary - Prints an unsigned number in binary
+ * @args: List of arguments
+ * @buffer: Buffer array for handling print
+ * @flags: Calculate active flags
+ * @width: Get width.
+ * @precision: Precision specification
+ * @size: Size specifier
  *
- * Return: Number of characters printed
+ * Return: Number of characters printed.
  */
-int nb_print_binary(va_list nb_args, char nb_buffer[],
-                    int nb_flags, int nb_width, int nb_precision, int nb_size)
+int printBinary(va_list args, char buffer[],
+	int flags, int width, int precision, int size)
 {
-  unsigned int nb_num, nb_m, i, nb_sum;
-  unsigned int nb_bits[32];
-  int nb_count;
+	unsigned int n, m, i, sum;
+	unsigned int a[32];
+	int count;
 
-  UNUSED(nb_buffer);
-  UNUSED(nb_flags);
-  UNUSED(nb_width);
-  UNUSED(nb_precision);
-  UNUSED(nb_size);
+	UNUSED(buffer);
+	UNUSED(flags);
+	UNUSED(width);
+	UNUSED(precision);
+	UNUSED(size);
 
-  nb_num = va_arg(nb_args, unsigned int);
-  nb_m = 2147483648; /* (2 ^ 31) */
+	n = va_arg(args, unsigned int);
+	m = 2147483648; /* (2 ^ 31) */
+	a[0] = n / m;
+	for (i = 1; i < 32; i++)
+	{
+		m /= 2;
+		a[i] = (n / m) % 2;
+	}
+	for (i = 0, sum = 0, count = 0; i < 32; i++)
+	{
+		sum += a[i];
+		if (sum || i == 31)
+		{
+			char binaryChar = '0' + a[i];
 
-  nb_bits[0] = nb_num / nb_m;
-
-  for(i = 1; i < 32; i++) {
-    nb_m /= 2;
-    nb_bits[i] = (nb_num / nb_m) % 2; 
-  }
-
-  for(i = 0, nb_sum = 0, nb_count = 0; i < 32; i++) {
-    nb_sum += nb_bits[i];
-    if (nb_sum || i == 31) {
-      char nb_char = '0' + nb_bits[i];
-      write(1, &nb_char, 1);
-      nb_count++;
-    }
-  }
-
-  return (nb_count);
+			write(1, &binaryChar, 1);
+			count++;
+		}
+	}
+	return (count);
 }
-

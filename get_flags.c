@@ -1,41 +1,35 @@
-/* Include header file */
 #include "main.h"
 
-/*
- * nb_get_flags - Get active flags from format string
- * @nb_format: Formatted string to print arguments
- * @nb_i: Pointer to index in format string
+/**
+ * identify_flags - Identify and calculate active flags
+ * @format: Formatted string to analyze for flags
+ * @index: Pointer to the current index in the format string
  *
- * Return: Active flags
- */ 
-int nb_get_flags(const char *nb_format, int *nb_i)
+ * Return: Calculated flags
+ */
+int identify_flags(const char *format, int *index)
 {
-  /* - + 0 # ' ' */
-  /* 1 2 4 8 16 */
-  int nb_j, nb_curr;  
-  int nb_flags = 0;
+	int i, current_index;
+	int flags = 0;
+	const char FLAG_CHARACTERS[] = {'-', '+', '0', '#', ' ', '\0'};
+	const int FLAG_VALUES[] = {F_MINUS, F_PLUS, F_ZERO, F_HASH, F_SPACE, 0};
 
-  char NB_FLAGS[] = {'-', '+', '0', '#', ' ', '\0'};
+	for (current_index = *index + 1; format[current_index] != '\0'; current_index++)
+	{
+		for (i = 0; FLAG_CHARACTERS[i] != '\0'; i++)
+		{
+			if (format[current_index] == FLAG_CHARACTERS[i])
+			{
+				flags |= FLAG_VALUES[i];
+				break;
+			}
+		}
 
-  int NB_FLAG_VALS[] = {NB_MINUS, NB_PLUS, NB_ZERO, NB_HASH, NB_SPACE, 0};
+		if (FLAG_CHARACTERS[i] == 0)
+			break;
+	}
 
-  for (nb_curr = *nb_i + 1; nb_format[nb_curr]; nb_curr++) {
+	*index = current_index - 1;
 
-    for (nb_j = 0; NB_FLAGS[nb_j]; nb_j++) {
-      if (nb_format[nb_curr] == NB_FLAGS[nb_j]) {
-        nb_flags |= NB_FLAG_VALS[nb_j];
-        break;
-      }
-    }
-
-    if (!NB_FLAGS[nb_j]) {
-      break;
-    }
-
-  }
-
-  *nb_i = nb_curr - 1;
-
-  return nb_flags;
-
+	return (flags);
 }
